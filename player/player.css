@@ -1,0 +1,59 @@
+#player {
+    background-color: #333;
+    border-color:red;
+    box-shadow: 6px 6px 6px gray;
+    float:left;
+    border-radius: 10px;
+    padding-right:8px;
+}
+
+#button {
+    background-color: #333;
+    float:left;
+    border-radius: 10px 0px 0px 10px;
+    width: 32px;
+    height:32px;
+    text-align:center;
+    padding: 4px;
+}
+
+#progressBar {
+    float:left;
+    height:24px;
+    padding: 8px;
+    background-color: #333;
+}
+
+#rightPart {
+    background-color: #333;
+    text-align:center;
+    color:white;
+    float:left;
+    border-radius: 0px 10px 10px 0px;
+    height:32px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+
+#played {
+    float:left;
+    height:32px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    text-shadow: 1px 1px 2px black, 0 0 2px gray, 0 0 1px white;
+    color: white;
+    font: 1em sans-serif;
+    padding-left:8px;
+}
+
+#duration {
+    float:left;
+    height:32px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    text-shadow: 1px 1px 2px black, 0 0 2px gray, 0 0 1px white;
+    color: white;
+    font: 1em sans-serif;
+}
+
