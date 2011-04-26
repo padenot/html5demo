@@ -1,20 +1,19 @@
 html {
-overflow: hidden;
+  /* overflow: hidden; */
 }
 
 body, html { 
-height: 100%;
-padding: 0px; 
+  height: 90%;
+  padding: 0px; 
 }
 
 body {
   background-color: #444;
   background-image: -moz-linear-gradient(top center, rgba(0,0,0,0.4) 10%, rgba(0,0,0,0) 50%);
-/*  background-image: -moz-radial-gradient( 50% 30% 90deg, circle, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 600px);*/
   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.10, rgba(0,0,0,0.4)), color-stop(0.50, rgba(0,0,0,0)));
   background-repeat: no-repeat;
   margin: auto;
-  overflow:scroll;
+  /* overflow:scroll; */
 }
 
 img, video {
@@ -29,30 +28,45 @@ header {
 nav > ul {
   list-style: none;
   padding-left: 1em;
-} 
+  -moz-transition-property: opacity;
+  -moz-transition-duration: 0.3s, 0.3s;
+}
+
 nav > ul > li.external:before {
   content: "→ ";
-} 
+  -moz-transition-property: opacity;
+  -moz-transition-duration: 0.3s, 0.3s;
+}
 
 nav > ul > li.internal:before {
-content: "+ ";
- text-size: 1.2em;
-} 
+  content: "+ ";
+  text-size: 1.2em;
+}
 
 nav > ul > li {
   padding-left:0px;
+  -moz-transition-property: opacity;
+  -moz-transition-duration: 0.3s, 0.3s;
+}
+
+nav > ul:hover > li {
+  opacity: 0.3;
+  -moz-transition-property: opacity;
+  -moz-transition-duration: 0.3s, 0.3s;
+}
+
+nav > ul:hover > li:hover {
+  opacity: 1;
+  -moz-transition-property: opacity;
+  -moz-transition-duration: 0.3s, 0.3s;
+  cursor: pointer;
 }
 
 a {
-color: #333333;
- text-decoration: none;
-}
-
-a:hover {
-  border-bottom: 1px dotted #333333;
+  color: #333333;
   text-decoration: none;
-  text-shadow: 0.05em 0.05em 0.05em  white;
-  color: #222222;
+  border-bottom: dotted 1px #222222;
+  font-weight: 600;
 }
 
 #content > section {
@@ -65,7 +79,7 @@ a:hover {
 }
 
 #content > section[selected=true] {
-  opacity:1;      
+  opacity:1;
   -moz-transition-property: opacity;
   -moz-transition-duration: 0.5s, 0.5s;
   -webkit-transition-property: opacity;
@@ -97,6 +111,8 @@ header {
   width: 10%;
   display: table-cell;
   text-align:right;
+  text-shadow: 2px 2px 1px #555555;
+  color: #333333;
 }
 
 nav {
