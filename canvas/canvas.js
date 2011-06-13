@@ -1,77 +1,66 @@
 var cvs = document.getElementById('canvas');
 var c = cvs.getContext('2d');
 
-var inter = setInterval(draw, 33);
 a = new Array();
-appendindex = 0;
-SPEED = 2;
-PARTICLE_SIZE = [8, 8];
-CANVAS_SIZE = [400, 400];
-FRONTCOLOR = "rgba(0,0,0,1)"
-BACKCOLOR = "rgba(255,255,255,1)"
-gradient = null;
-generation=0;
 
-//particle = {
-//    x,
-//    y,
-//    dx,
-//    dy,
-//    sx,
-//    sy,
-//};
+Simulation = {
+  interval : 33,
+  callback : setInterval(draw, this.interval),
+  appendindex : 0,
+  speed : 2,
+  particleSize : {
+    x : 8,
+    y: 8
+  },
+  canvasSize : {
+    x : 400,
+    y : 400
+  },
+  generation : 0,
+  wind : {
+    dx:0,
+    dy:0
+  },
+};
 
 function init() {
-  //  gradient = c.createRadialGradient(0, 0, 100, 300, 300, 600);
-  //  gradient.addColorStop(0, "rgba(255,255,255,1)");
-  //  gradient.addColorStop(0.3, "rgba(200,0,0,1)");
-  //  gradient.addColorStop(0.6, "rgba(100,0,0,1)");
-  //  gradient.addColorStop(0.9, "rgba(0,0,0,1)");
-  //  c.fillStyle = gradient;
-  //  c.fillRect(0,0,600,600);
-  c.strokeRect(0,0,CANVAS_SIZE[0],CANVAS_SIZE[1]);
+  c.strokeRect(0,0,Simulation.canvasSize.x,Simulation.canvasSize.y);
 }
 
 function generate(count) {
   for(var i = 0; i < count; i++) {
-    a.push({x:200, y:0, dx:1, dy:SPEED, sx:PARTICLE_SIZE[0], sy:PARTICLE_SIZE[1]});
-  }
-}
-
-function printPoint(point) {
-  return "[" + point[0] + "," + point[1] + "]";
-}
-
-function clear() {
-  c.fillStyle = BACKCOLOR;
-  for(var i = 0; i < a.length; i++) {
-    c.fillRect(a[i].x, a[i].y, PARTICLE_SIZE[0], PARTICLE_SIZE[1]);
+    a.push({x:200,
+            y:200,
+            dx:1,
+            dy:Simulation.speed,
+            sx:Simulation.particleSize.x,
+            sy:Simulation.particleSize.y});
   }
 }
 
 function drawParticle(pos) {
-  gradient = c.createRadialGradient(pos.x+PARTICLE_SIZE[0], pos.y+PARTICLE_SIZE[1], PARTICLE_SIZE[0]/4, pos.x+PARTICLE_SIZE[0], pos.y+PARTICLE_SIZE[1], PARTICLE_SIZE[0]);
+  gradient = c.createRadialGradient(pos.x+Simulation.particleSize.x,
+                                    pos.y+Simulation.particleSize.y,
+                                    Simulation.particleSize.x/2,
+                                    pos.x+Simulation.particleSize.x,
+                                    pos.y+Simulation.particleSize.y,
+                                    Simulation.particleSize.x);
   gradient.addColorStop(1, "rgba(255,255,255,0)");
-//  gradient.addColorStop(0.4, "rgba(0,0,0,0.3)");
-  gradient.addColorStop(0, "rgba(0,0,0,0.5)");
+  gradient.addColorStop(0, "rgba(100,100,100,0.5)");
   c.fillStyle = gradient;
-  c.fillRect(pos.x,pos.y,PARTICLE_SIZE[0]*4,PARTICLE_SIZE[1]*4);
+  c.fillRect(pos.x,pos.y,Simulation.particleSize.x*4,Simulation.particleSize.y*4);
 }
 
 function compute() {
-  wind = {
-    dx:0,
-    dy:0
-  };
-  wind.dx += (Math.random() - 0.6);
-  wind.dy += (Math.random() - 0.4);
+  Simulation.wind.dx = (Simulation.wind.dx + (Math.random() - 0.6)) % 1;
+  Simulation.wind.dy = (Simulation.wind.dx + (Math.random() - 0.4)) % 1;
   for(var i = 0; i < a.length; i++) {
-    a[i].dx = (a[i].dx + wind.dx + (Math.random() - 0.5)*0.3);
-    a[i].dy = (a[i].dy + wind.dy + (Math.random() - 0.4));
+    a[i].dx = (a[i].dx + Simulation.wind.dx + (Math.random() - 0.5)*0.3);
+    a[i].dy = (a[i].dy + Simulation.wind.dy + (Math.random() - 0.4));
     a[i].x += Math.round(a[i].dx);
     a[i].y += Math.round(a[i].dy);
 
-    if(a[i].x >= CANVAS_SIZE[0] || a[i].y >= CANVAS_SIZE[1]) {
+    if(a[i].x >= Simulation.canvasSize.x || a[i].y >= Simulation.canvasSize.y) {
       a.splice(i, 1);
     }
   }
@@ -79,15 +68,14 @@ function compute() {
 
 function move() {
   for(var i = 0; i < a.length; i++) {
-    //c.fillRect(a[i].x, a[i].y, PARTICLE_SIZE[0], PARTICLE_SIZE[1]);
     drawParticle(a[i]);
   }
 }
 
 function draw() {
   generate(10);
-  //clear();
-  c.clearRect(0, 0, 400, 400);
+  c.clearRect(0, 0, Simulation.canvasSize.x, Simulation.canvasSize.y);
   compute();
   move();
 }
+
