@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mozilla Audio Data API Test</title>
+    <style>
+      body {
+        background-image: -moz-linear-gradient(
+          center bottom,
+          rgb(179,179,179) 0%,
+          rgb(255,255,255) 100%
+        );
+        font-family: "Palatino";
+      }
+
+      .wrapper {
+        margin-left:auto;
+        margin-right:auto;
+        display:table;
+        height: 800px;
+      }
+
+      canvas {
+        display: table-cell;
+        vertical-align: middle;
+        cursor: pointer;
+      }
+
+      .bottomline {
+        position: absolute;
+        bottom: 5%;
+        width: 100%;
+        text-align:center;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      a:link {
+        color: #333333;
+      }
+      a:visited {
+        color: #555555;
+      }
+      a:hover {
+        color: #444444;
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="audio-element"
+    src="audio.ogg">
+    </audio>
+    <div class="wrapper"><canvas id="visu"></canvas></div>
+    <div class="bottomline">Music : Lush - Spatial Love (available <a
+        href="http://www.cutmusic.org/releases/cut001.php">here</a>) &ndash; Works on Firefox 4+ only.<div>
+
+    <script>
+      var samplePerPixel = 4;
+      var a = document.getElementById("audio-element");
+      var canvas = document.getElementById('visu');
+      var ctx = canvas.getContext('2d'),
+          channels,
+          rate,
+          frameBufferLength,
+          fft,
+          windowing;
+
+      a.addEventListener('MozAudioAvailable', audioAvailable, false);
+      a.addEventListener('loadedmetadata', loadedMetadata, false);
+
+      var r = [0,1],
+          g = [80,1],
+          b = [160,1];
+
+      window.addEventListener("blur", function() {
+        a.removeEventListener("MozAudioAvailable", audioAvailable);
+      }, false);
+      window.addEventListener("blur", function() {
+        a.addEventListener('MozAudioAvailable', audioAvailable, false);
+      }, false);
+
+      a.play();
+
+      canvas.height = "500";
+      canvas.addEventListener("click", function() {
+        if (a.paused) {
+          a.play();
+        } else {
+          a.pause();
+        }
+      }, false);
+
+
+      function loadedMetadata() {
+        channels          = a.mozChannels;
+        rate              = a.mozSampleRate;
+        frameBufferLength = a.mozFrameBufferLength;
+        windowing = frameBufferLength / canvas.width;
+        canvas.width = frameBufferLength / channels;
+
+      }
+
+      function avg(array, start, len) {
+        var acc = 0;
+        for(var i = start; i < start + len; i++) {
+          acc += array[i];
+        }
+        return acc / len;
+      }
+
+      function advance(c) {
+        c[0]+=c[1];
+        if(c[0] <= 0 || c[0] >= 200) {
+          c[1]=-c[1];
+        }
+      }
+      var oldbuffers = [];
+      function audioAvailable(event) {
+        if (oldbuffers.length == 1) {
+          var fb = event.frameBuffer,
+              length = (fb.length * (oldbuffers.length + 1)) / channels,
+              signal = new Float32Array(length);
+
+          // mono mixdown
+          for (var l = 0; l < oldbuffers.length; l++) {
+            for (var i = 0, fbl = frameBufferLength; i < fbl; i++ ) {
+              signal[i] = (oldbuffers[l][2*i] + oldbuffers[l][2*i+1]) / 2;
+            }
+          }
+          for (var i = oldbuffers.length*oldbuffers[0].length, fbl = frameBufferLength; i < oldbuffers.length*oldbuffers[0].length + fbl; i++ ) {
+            signal[i] = (fb[2*i] + fb[2*i+1]) / 2;
+          }
+
+          ctx.clearRect(0,0, canvas.width, canvas.height);
+
+          for (var i = 0; i < signal.length; i+=samplePerPixel) {
+            var value = avg(signal, i, samplePerPixel);
+            advance(r);
+            advance(g);
+            advance(b);
+            ctx.fillStyle = 'rgba('+r[0]+','+g[0]+','+b[0]+', 1)';
+            ctx.fillRect(i, canvas.height / 2, samplePerPixel/2, value*canvas.height/2);
+          }
+          oldbuffers = [];
+        } else {
+          oldbuffers.push(event.frameBuffer);
+        }
+      }
+    </script>
+  </body>
+</html>

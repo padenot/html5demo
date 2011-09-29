@@ -2,13 +2,13 @@ var cvs = document.getElementById('canvas');
 var c = cvs.getContext('2d');
 var fps = null;
 
-a = new Array();
+a = [];
 
 Simulation = {
   lastcall : mozAnimationStartTime,
   framecount : 0,
   timespent : 0,
-  maxParticle : 500,
+  maxParticle : 1500,
   particleData : new Image(),
   appendindex : 0,
   speed : 0.5,
@@ -91,7 +91,7 @@ function draw(timeStamp) {
   Simulation.framecount++;
   Simulation.lastcall = timeStamp;
 
-  generate(20);
+  generate(40);
   c.clearRect(0, 0, Simulation.canvasSize.x, Simulation.canvasSize.y);
   compute();
   move();
